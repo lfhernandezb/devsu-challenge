@@ -1,0 +1,4 @@
+rootProject.name = 'devsutestclientepersona'
+include 'devsutest-entities'
+include 'entities'
+

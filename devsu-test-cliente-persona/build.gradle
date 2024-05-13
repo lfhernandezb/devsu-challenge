@@ -1,0 +1,103 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'com.bmuschko.docker-remote-api' version '9.4.0'
+}
+
+import com.bmuschko.gradle.docker.tasks.image.*
+import com.bmuschko.gradle.docker.tasks.container.*
+
+import org.gradle.api.JavaVersion
+
+docker {
+	url = 'unix:///Users/lfhernandez/.docker/run/docker-cli-api.sock'
+	registryCredentials {
+		url = 'https://index.docker.io/v1/'
+		username = 'XXXX'
+		password = 'XXXX'
+	}
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+}
+
+compileJava {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	// providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'org.postgresql:postgresql'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+task createDockerfile(type: Dockerfile) {
+	from 'openjdk:11-jre-slim'
+	copyFile 'build/libs/devsutestclientepersona-0.0.1-SNAPSHOT.jar', '/app/app.jar'
+	entryPoint 'java'
+	defaultCommand '-jar', '/app/app.jar'
+	exposePort 8080
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+	dependsOn createDockerfile
+	inputDir = layout.buildDirectory.dir("docker")
+	images = ['lfhernandezb/devsu-cli-per:latest']
+}
+
+/*
+task pushDockerImage(type: DockerPushImage) {
+	dependsOn buildDockerImage
+	imageName = 'lfhernandezb/devsu-cli-per'
+}
+*/
+
+task stopDockerContainer(type: DockerStopContainer) {
+	targetContainerId('devsu-cli-per')
+	onError { exception -> handleError(exception) }
+}
+
+task removeDockerContainer(type: DockerRemoveContainer) {
+	dependsOn stopDockerContainer
+	targetContainerId('devsu-cli-per')
+	onError { exception -> handleError(exception) }
+}
+
+task createDockerContainer(type: DockerCreateContainer) {
+	dependsOn buildDockerImage, removeDockerContainer
+	targetImageId buildDockerImage.getImageId()
+	containerName = 'devsu-cli-per'
+	hostConfig.portBindings = ['8080:8080']
+}
+
+task startDockerContainer(type: DockerStartContainer) {
+	dependsOn createDockerContainer
+	targetContainerId { createDockerContainer.getContainerId() }
+}
