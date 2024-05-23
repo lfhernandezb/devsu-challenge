@@ -39,6 +39,14 @@ eureka:
 #   metadataMap:
 #     instanceId: ${spring.application.name}:${spring.application.instance_id:${server.port}}
 
+# All of your queries to another microservice will be routed through Ribbon,
+#  which talks with Eureka to find the actual address of the microservice
+# instance that you need to query.
+
+ribbon:
+  http:
+    client:
+      enabled: true
 
 # Enable actuator access without security checks - DEVELOPMENT ONLY
 # Spring Boot 1.5

@@ -3,11 +3,15 @@ package com.example.devsutestclientepersona;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.logging.Logger;
 
 @SpringBootApplication
+// habilitamos descubrimiento de microservicios
 @EnableDiscoveryClient
+// habilitamos transacciones en la BD
+@EnableTransactionManagement
 public class DevsutestclientepersonaApplication {
 
 	protected Logger logger = Logger.getLogger(DevsutestclientepersonaApplication.class.getName());

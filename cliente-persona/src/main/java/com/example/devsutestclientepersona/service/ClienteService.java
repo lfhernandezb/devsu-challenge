@@ -4,14 +4,18 @@ import com.example.devsutestclientepersona.persistence.crud.ClienteCrudRepositor
 import com.example.devsutestclientepersona.persistence.crud.PersonaCrudRepository;
 import com.example.devsutestclientepersona.persistence.entity.Cliente;
 import com.example.devsutestclientepersona.persistence.entity.Persona;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class ClienteService {
+
+    private final Logger logger = Logger.getLogger(ClienteService.class.getName());
 
     @Autowired
     private ClienteCrudRepository clienteCrudRepository;
@@ -24,6 +28,7 @@ public class ClienteService {
     }
 
     public Optional<Cliente> getById(long id) {
+        logger.info("getById called");
         return clienteCrudRepository.findById(id);
     }
 
@@ -38,15 +43,20 @@ public class ClienteService {
         }
     }
 
+    @Transactional
     public Cliente save(Cliente cliente) {
         Persona persona = personaService.save(cliente.getPersona());
         cliente.setPersona(persona);
-        cliente.setPersonaId(persona.getPersonaId());
+        //cliente.setPersonaId(persona.getPersonaId());
         return clienteCrudRepository.save(cliente);
     }
 
+    @Transactional
     public boolean delete(long id) {
+        logger.info("delete called");
         return getById(id).map((cliente) -> {
+            logger.info("found cliente to delete");
+            personaService.delete(cliente.getPersona().getPersonaId());
             clienteCrudRepository.deleteById(id);
             return true;
         }).orElse(false);

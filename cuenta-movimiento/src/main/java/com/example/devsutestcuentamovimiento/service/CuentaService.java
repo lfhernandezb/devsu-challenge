@@ -2,6 +2,7 @@ package com.example.devsutestcuentamovimiento.service;
 
 import com.example.devsutestcuentamovimiento.error_handling.RestErrorHandler;
 import com.example.devsutestcuentamovimiento.persistence.repository.CuentaCrudRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,12 @@ public class CuentaService {
         return cuentaCrudRepository.findById(id);
     }
 
+    @Transactional
     public Cuenta save(Cuenta cuenta) {
         return cuentaCrudRepository.save(cuenta);
     }
 
+    @Transactional
     public boolean delete(long id) throws IllegalArgumentException {
         return getById(id).map((cuenta) -> {
             cuentaCrudRepository.deleteById(id);

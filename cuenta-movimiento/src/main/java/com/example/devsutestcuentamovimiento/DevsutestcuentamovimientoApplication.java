@@ -6,12 +6,16 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.logging.Logger;
 
 @SpringBootApplication
+// habilitamos descubrimiento de microservicios
 @EnableDiscoveryClient
+// habilitamos transacciones en la BD
+@EnableTransactionManagement
 public class DevsutestcuentamovimientoApplication {
 
 	@LoadBalanced

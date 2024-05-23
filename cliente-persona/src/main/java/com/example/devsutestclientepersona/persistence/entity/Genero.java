@@ -1,14 +1,13 @@
 package com.example.devsutestclientepersona.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +22,8 @@ public class Genero {
     private int generoId;
     private String abreviacion;
     private String descripcion;
+
+    @JsonIgnoreProperties("genero")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "genero", cascade = CascadeType.ALL)
+    private List<Persona> personas;
 }

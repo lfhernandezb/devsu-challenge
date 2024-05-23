@@ -1,5 +1,6 @@
 package com.example.devsutestclientepersona.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +21,13 @@ public class Cliente {
     private long clienteId;
     private String contrasena;
     private boolean estado;
-    @Column(name = "id_persona")
-    private long personaId;
+    //@Column(name = "id_persona")
+    //private long personaId;
+
+    @JsonIgnoreProperties("cliente")
     //@OneToOne(fetch = FetchType.EAGER)
-    @OneToOne
-    @MapsId("personaId")
-    @JoinColumn(name = "id_persona", insertable = false, updatable = false)
+    @OneToOne(fetch=FetchType.EAGER) //, mappedBy="cliente", cascade=CascadeType.PERSIST)
+    //@MapsId("personaId")
+    @JoinColumn(name = "id_persona") //, insertable = false, updatable = false)
     private Persona persona;
 }
