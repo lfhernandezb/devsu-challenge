@@ -1,5 +1,6 @@
 package com.example.devsutestclientepersona.persistence.crud;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import com.example.devsutestclientepersona.persistence.entity.Cliente;
@@ -19,4 +20,13 @@ public interface ClienteCrudRepository extends CrudRepository<Cliente, Long> {
 , nativeQuery = true)
     public Optional<Cliente> findByPersonaId(
             @Param("personaId") long personaId);
+
+    @Modifying
+    @Query(value=
+            "DELETE FROM cliente\n" +
+                    "WHERE id_cliente = :clienteId"
+            , nativeQuery = true)
+    public void deleteById(
+            @Param("clienteId") long clienteId);
+
 }

@@ -98,19 +98,18 @@ public class ClienteTest {
         // obtengo cliente al azar de la lista
         Cliente clientetoAdd = (Cliente) this.list.get(new Random().nextInt(this.list.size()));
 
-        Mockito.when(this.personaCrudRepository.save(Mockito.any(Persona.class)))
-                .thenReturn(clientetoAdd.getPersona());
-
-        Mockito.when(this.personaCrudRepository.save(Mockito.any(Persona.class)))
-                .thenReturn(clientetoAdd.getPersona());
+        //Mockito.when(this.personaCrudRepository.save(Mockito.any(Persona.class)))
+        //        .thenReturn(clientetoAdd.getPersona());
 
         Mockito.when(this.clienteCrudRepository.save(Mockito.any(Cliente.class)))
                 .thenReturn(clientetoAdd);
 
-        this.clienteService.save(clientetoAdd);
+        Cliente cl = this.clienteService.save(clientetoAdd);
 
         Mockito.verify(this.clienteCrudRepository, Mockito.times(1))
                 .save(Mockito.any(Cliente.class));
+
+        assertTrue(cl.equals(clientetoAdd));
     }
 
 }

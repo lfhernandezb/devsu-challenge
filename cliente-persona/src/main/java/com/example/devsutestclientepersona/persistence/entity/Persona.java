@@ -32,10 +32,10 @@ public class Persona {
     private String direccion;
     private String telefono;
 
+    /*
     @JsonIgnoreProperties("persona")
     @OneToOne(fetch=FetchType.EAGER, mappedBy="persona", cascade=CascadeType.PERSIST) // (cascade = {CascadeType.ALL})
-    //@JoinColumn(name = "id_persona")
     private Cliente cliente;
-
+    */
 
 }

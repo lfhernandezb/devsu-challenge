@@ -21,7 +21,7 @@ public class ClienteService {
     private ClienteCrudRepository clienteCrudRepository;
 
     @Autowired
-    private PersonaService personaService;
+    private PersonaCrudRepository personaCrudRepository;
 
     public List<Cliente> getAll() {
         return (List<Cliente>) clienteCrudRepository.findAll();
@@ -33,8 +33,8 @@ public class ClienteService {
     }
 
     public Optional<Cliente> getByNombre(String nombre) {
-        if (personaService.getByNombre(nombre).isPresent()) {
-            Persona persona = personaService.getByNombre(nombre).get();
+        if (personaCrudRepository.findByNombre(nombre).isPresent()) {
+            Persona persona = personaCrudRepository.findByNombre(nombre).get();
 
             return clienteCrudRepository.findByPersonaId(persona.getPersonaId());
         }
@@ -45,7 +45,7 @@ public class ClienteService {
 
     @Transactional
     public Cliente save(Cliente cliente) {
-        Persona persona = personaService.save(cliente.getPersona());
+        Persona persona = personaCrudRepository.save(cliente.getPersona());
         cliente.setPersona(persona);
         //cliente.setPersonaId(persona.getPersonaId());
         return clienteCrudRepository.save(cliente);
@@ -56,8 +56,8 @@ public class ClienteService {
         logger.info("delete called");
         return getById(id).map((cliente) -> {
             logger.info("found cliente to delete");
-            personaService.delete(cliente.getPersona().getPersonaId());
             clienteCrudRepository.deleteById(id);
+            personaCrudRepository.deleteById(cliente.getPersona().getPersonaId());
             return true;
         }).orElse(false);
     }

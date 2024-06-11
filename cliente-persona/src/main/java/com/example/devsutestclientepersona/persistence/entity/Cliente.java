@@ -24,10 +24,9 @@ public class Cliente {
     //@Column(name = "id_persona")
     //private long personaId;
 
+    // CascadeType.ALL specifies that all operations (e.g., persist, remove) should be cascaded to the associated Person.
     @JsonIgnoreProperties("cliente")
-    //@OneToOne(fetch = FetchType.EAGER)
-    @OneToOne(fetch=FetchType.EAGER) //, mappedBy="cliente", cascade=CascadeType.PERSIST)
-    //@MapsId("personaId")
+    @OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name = "id_persona") //, insertable = false, updatable = false)
     private Persona persona;
 }
